@@ -37,7 +37,7 @@
 			// 
 			// buttWipe
 			// 
-			this.buttWipe.Location = new System.Drawing.Point(299, 77);
+			this.buttWipe.Location = new System.Drawing.Point(675, 77);
 			this.buttWipe.Name = "buttWipe";
 			this.buttWipe.Size = new System.Drawing.Size(53, 23);
 			this.buttWipe.TabIndex = 0;
@@ -66,7 +66,7 @@
 			// buttOpenFile
 			// 
 			this.buttOpenFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttOpenFile.Location = new System.Drawing.Point(595, 41);
+			this.buttOpenFile.Location = new System.Drawing.Point(101, 77);
 			this.buttOpenFile.Name = "buttOpenFile";
 			this.buttOpenFile.Size = new System.Drawing.Size(81, 23);
 			this.buttOpenFile.TabIndex = 4;
@@ -77,7 +77,7 @@
 			// buttonOpenFolder
 			// 
 			this.buttonOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOpenFolder.Location = new System.Drawing.Point(718, 42);
+			this.buttonOpenFolder.Location = new System.Drawing.Point(382, 77);
 			this.buttonOpenFolder.Name = "buttonOpenFolder";
 			this.buttonOpenFolder.Size = new System.Drawing.Size(78, 23);
 			this.buttonOpenFolder.TabIndex = 5;

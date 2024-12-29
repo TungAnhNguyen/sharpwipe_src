@@ -73,7 +73,7 @@ namespace SharpWipe
                     FileStream inputStream = new FileStream(filename, FileMode.Open);
                     for (int currentPass = 0; currentPass < timesToWrite; currentPass++)
                     {
-                        UpdatePassInfo(currentPass + 1, timesToWrite);
+                        UpdatePassInfo(currentPass + 1, timesToWrite, filename);
 
                         // Go to the beginning of the stream
                         inputStream.Position = 0;
@@ -125,9 +125,9 @@ namespace SharpWipe
 
         # region Events
         public event PassInfoEventHandler PassInfoEvent;
-        private void UpdatePassInfo(int currentPass, int totalPasses)
+        private void UpdatePassInfo(int currentPass, int totalPasses, string currentFileName)
         {
-            PassInfoEvent(new PassInfoEventArgs(currentPass, totalPasses));
+            PassInfoEvent(new PassInfoEventArgs(currentPass, totalPasses, currentFileName));
         }
 
         public event SectorInfoEventHandler SectorInfoEvent;
@@ -157,17 +157,21 @@ namespace SharpWipe
     {
         private readonly int cPass;
         private readonly int tPass;
+        private readonly string currentFileName;
 
-        public PassInfoEventArgs(int currentPass, int totalPasses)
+        public PassInfoEventArgs(int currentPass, int totalPasses, string currentFileName)
         {
             cPass = currentPass;
             tPass = totalPasses;
+            this.currentFileName = currentFileName;
         }
 
         /// <summary> Get the current pass </summary>
         public int CurrentPass { get { return cPass; } }
         /// <summary> Get the total number of passes to be run </summary> 
         public int TotalPasses { get { return tPass; } }
+
+		public string CurrentFileName { get { return currentFileName; } }
     }
     # endregion
 

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -7,9 +8,8 @@ namespace SharpWipe
 	public partial class Form1 : Form
 	{
 		private readonly Wipe wipe = new Wipe();
-		private string path = string.Empty;
-		private bool isDirectory = false;
 
+		private string currentFileName = string.Empty;
 		private int currentPass = 0;
 		private int totalPasses = 0;
 		private int currentSector = 0;
@@ -49,6 +49,7 @@ namespace SharpWipe
 		{
 			currentPass = e.CurrentPass;
 			totalPasses = e.TotalPasses;
+			currentFileName = e.CurrentFileName;
 			UpdateInfoLabel();
 		}
 
@@ -67,8 +68,8 @@ namespace SharpWipe
 
 		private void UpdateInfoLabel()
 		{
-			string infoText = string.Format("Running Pass {0} of {1} Sector {2} of {3}", currentPass, totalPasses,
-							  currentSector, totalSectors);
+			string infoText = string.Format("Running Pass {0} of {1} Sector {2} of {3} for file: {4}", currentPass, totalPasses,
+							  currentSector, totalSectors, currentFileName);
 			lblInfo.Invoke(new UpdateLabelTextDelegate(UpdateLabelText), infoText);
 		}
 
@@ -85,18 +86,18 @@ namespace SharpWipe
 			wipeThread.Start();
 
 			//todo: implement callback after wipe done
-			//path = "";
 			//displayFileName.Text = "";
 		}
 
 		private void StartWipeFile()
 		{
+			bool isDirectory = Directory.Exists(displayFileName.Text);
 			if (isDirectory)
 			{
-				wipe.WipeFolder(path, 5);
+				wipe.WipeFolder(displayFileName.Text, 5);
 				return;
 			}
-			wipe.WipeFile(path, 5);
+			wipe.WipeFile(displayFileName.Text, 5);
 		}
 
 		private void Form1_DragEnter(object sender, DragEventArgs e)
@@ -108,19 +109,18 @@ namespace SharpWipe
 		private void Form1_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-			path = files[0];
+			string path = files[0];
 
 			displayFileName.Text = path;
 		}
 
 		private void buttOpenFile_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			if (DialogResult.OK == ofd.ShowDialog())
+			OpenFileDialog openFileDiaglog = new OpenFileDialog();
+			if (DialogResult.OK == openFileDiaglog.ShowDialog())
 			{
-				path = ofd.FileName;
+				string path = openFileDiaglog.FileName;
 				displayFileName.Text = path;
-				isDirectory = false;
 			}
 		}
 
@@ -130,10 +130,9 @@ namespace SharpWipe
 			if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
 			{
 				//folderName = folderBrowserDialog.SelectedPath;
-				path = folderBrowserDialog.SelectedPath;
+				string path = folderBrowserDialog.SelectedPath;
 				displayFileName.Text = path;
 				Console.WriteLine("Tung Anh folder: " + path);
-				isDirectory = true;
 			}
 
 		}

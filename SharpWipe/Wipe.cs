@@ -14,16 +14,54 @@ namespace SharpWipe
         /// <param name="timesToWrite">Specifies the number of times the file should be overwritten</param>
         public void WipeFile(string filename, int timesToWrite)
         {
+            wipeFileCore(filename, timesToWrite);
+            WipeDone();//todo: move to differetn method
+        }
+
+        public void WipeFolder(string folderName, int timesToWrite)
+		{
+			try
+			{
+                Console.WriteLine("Tung Anh WipeFolder() folderName: " + folderName + " exist: " + Directory.Exists(folderName));
+                string[] fileNameList = Directory.GetFiles(folderName);
+				if (fileNameList.Length == 0)
+				{
+                    //todo: handle case empty
+				}
+
+				//todo: handle case folder in folder
+				foreach (string fileName in fileNameList)
+				{
+                    wipeFileCore(fileName, timesToWrite);
+				}
+
+                //todo: when done, remove containing folder
+                WipeDone();
+            }
+			catch (Exception e)
+			{
+                WipeError(e);
+            }
+		}
+
+        private void wipeFileCore(string filename, int timesToWrite)
+		{
             try
             {
+                Console.WriteLine("Tung Anh wipeFileCore() fileName: " + filename + " exist: " + File.Exists(filename));
+
                 if (File.Exists(filename))
                 {
                     // Set the files attributes to normal in case it's read-only.
+
+                    FileAttributes fileAttributes = File.GetAttributes(filename);
+                    Console.WriteLine("Tung Anh WipeFile() fileName: " + filename + "; attribute: " + fileAttributes.ToString());
+
                     File.SetAttributes(filename, FileAttributes.Normal);
 
                     // Calculate the total number of sectors in the file.
-                    double sectors = Math.Ceiling(new FileInfo(filename).Length/512.0);
-                    
+                    double sectors = Math.Ceiling(new FileInfo(filename).Length / 512.0);
+
                     // Create a dummy-buffer the size of a sector.
                     byte[] dummyBuffer = new byte[512];
 
@@ -43,7 +81,7 @@ namespace SharpWipe
                         // Loop all sectors
                         for (int sectorsWritten = 0; sectorsWritten < sectors; sectorsWritten++)
                         {
-                            UpdateSectorInfo(sectorsWritten + 1, (int) sectors);
+                            UpdateSectorInfo(sectorsWritten + 1, (int)sectors);
 
                             // Fill the dummy-buffer with random data
                             rng.GetBytes(dummyBuffer);
@@ -58,6 +96,7 @@ namespace SharpWipe
                     inputStream.Close();
 
                     // As an extra precaution I change the dates of the file so the
+
                     // original dates are hidden if you try to recover the file.
                     DateTime dt = new DateTime(2037, 1, 1, 0, 0, 0);
                     File.SetCreationTime(filename, dt);
@@ -67,14 +106,18 @@ namespace SharpWipe
                     File.SetCreationTimeUtc(filename, dt);
                     File.SetLastAccessTimeUtc(filename, dt);
                     File.SetLastWriteTimeUtc(filename, dt);
+                    //todo ghewriogjrel
+                    //todo: ghewriogjrel
+                    //TODO geriojgre
+                    //TODO: geriojgre
 
                     // Finally, delete the file
                     File.Delete(filename);
 
-                    WipeDone();
+
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 WipeError(e);
             }
